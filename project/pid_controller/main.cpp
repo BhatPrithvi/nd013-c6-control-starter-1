@@ -219,9 +219,9 @@ int main ()
   * TODO (Step 1): create pid (pid_steer) for steer command and initialize values
   **/  
   PID pid_steer = PID();
-  double Kp_steer = 0.13;
-  double Kd_steer = 0.005;
-  double Ki_steer = 0.001;
+  double Kp_steer = 0.11;
+  double Kd_steer = 0.1285;
+  double Ki_steer = 0.025;
   double output_lim_max_steer = 1.2;
   double output_lim_min_steer = -1.2;
 
@@ -233,10 +233,10 @@ pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_st
   * TODO (Step 1): create pid (pid_throttle) for throttle command and initialize values
   **/
   PID pid_throttle = PID ();
-  double Kp_throttle = 1.9;
-  double Kd_throttle = 0.02;  
-  double Ki_throttle = 0.001;
-  double output_lim_max_throttle = 1;
+  double Kp_throttle = 0.29;
+  double Kd_throttle = 0.00205;  
+  double Ki_throttle = 0.000945207;
+  double output_lim_max_throttle = 1;  
   double output_lim_min_throttle = -1;
 
  pid_throttle.Init(Kp_throttle,Ki_throttle,Kd_throttle,output_lim_max_throttle,output_lim_min_throttle);
@@ -318,13 +318,19 @@ pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_st
           for (int i =0; i< x_points.size(); i++)
           {
             double dist = pow((x_position - x_points[close_id]),2) + pow((y_position - y_points[close_id]),2);
-            double act_dis = pow((x_position - x_points[i]),2) + pow((y_position - y_points[i]),2);
+           double act_dis = pow((x_position - x_points[i]),2) + pow((y_position - y_points[i]),2);
             if (act_dis < dist)
             {
               close_id = i;
             }
           }
-           error_steer = yaw -angle_between_points(x_points[close_id], y_points[close_id],x_position,y_position);
+          error_steer = yaw -angle_between_points(x_points[close_id], y_points[close_id],x_position,y_position);
+
+          // error_steer = yaw -angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
+          
+          
+//error_steer = yaw - angle_between_points( x_position, y_position, 
+                                                     //x_points.back(), y_points.back());
 
           /**
           * TODO (step 3): uncomment these lines
