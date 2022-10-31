@@ -20,6 +20,7 @@ public:
     double PError;
     double IError;
     double DError;
+    double preverr;
 
 
     /*
@@ -34,6 +35,8 @@ public:
     */
     double output_lim_maxi;
     double output_lim_mini;
+    double lim_min_integ;
+    double lim_max_integ;
   
     /*
     * Delta time

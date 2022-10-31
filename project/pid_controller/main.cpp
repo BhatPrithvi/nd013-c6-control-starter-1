@@ -220,12 +220,11 @@ int main ()
   **/  
   PID pid_steer = PID();
   double Kp_steer = 0.11;
-  double Kd_steer = 0.1285;
+  double Kd_steer = 0.15;
   double Ki_steer = 0.025;
   double output_lim_max_steer = 1.2;
   double output_lim_min_steer = -1.2;
-
-pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_steer);
+  pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_steer);
 
 
   // initialize pid throttle
@@ -233,9 +232,9 @@ pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_st
   * TODO (Step 1): create pid (pid_throttle) for throttle command and initialize values
   **/
   PID pid_throttle = PID ();
-  double Kp_throttle = 0.29;
-  double Kd_throttle = 0.00205;  
-  double Ki_throttle = 0.000945207;
+  double Kp_throttle = 0.2219;
+  double Kd_throttle = 0.001;  
+  double Ki_throttle = 0.0005;
   double output_lim_max_throttle = 1;  
   double output_lim_min_throttle = -1;
 
@@ -313,7 +312,14 @@ pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_st
           /**
           * TODO (step 3): compute the steer error (error_steer) from the position and the desired trajectory
           **/
-          // find the closest point on the path
+          /* Tried 3 methods to calculate error steer
+Method 1: As used in line 104 to calculate ego_state.rotation.yaw
+          error_steer = yaw -angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);   
+          
+Method 2: As mentioned in project intsructions          
+error_steer = yaw - angle_between_points( x_position, y_position,                                                x_points.back(), y_points.back());
+*/
+          //Method 3: Finding the closest point on the path gives the best results
           int close_id = 0;
           for (int i =0; i< x_points.size(); i++)
           {
@@ -325,12 +331,6 @@ pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_st
             }
           }
           error_steer = yaw -angle_between_points(x_points[close_id], y_points[close_id],x_position,y_position);
-
-          // error_steer = yaw -angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
-          
-          
-//error_steer = yaw - angle_between_points( x_position, y_position, 
-                                                     //x_points.back(), y_points.back());
 
           /**
           * TODO (step 3): uncomment these lines
@@ -363,11 +363,8 @@ pid_steer.Init(Kp_steer,Ki_steer,Kd_steer,output_lim_max_steer,output_lim_min_st
           /**
           * TODO (step 2): compute the throttle error (error_throttle) from the position and the desired speed
           **/
-          // modify the following line for step 2
-          error_throttle = v_points.back()-velocity; //v_points[v_points.size()-1]-velocity;//
-
-
-
+          // modify the following line for step 2 as mentioned in project requirements
+          error_throttle = v_points.back()-velocity; 
           double throttle_output;
           double brake_output;
 
