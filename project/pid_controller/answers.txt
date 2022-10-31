@@ -1,7 +1,24 @@
 // Answer the following questions:
 
 // Add the plots to your report and explain them (describe what you see)
+
+The first plot describes the changes in error_throttle, brake output and throttle output. The error_throttle is the difference between the actual velocity of the ego vehicle and the computed velocity of the path planner. The throttle is the total error of the PID controller. This should be maintained within the limits [-1, 1]. When throttle is positive, then the throttle output is the same and the brake output is zero. When throttle is negative, throttle output is reduced to zero and brake output is equalized to negative of the throttle.
+
+The second plot describes changes in error steering and steering output. The error steering is the angle difference between the actual steer and the desired steer to reach the planned position. The desired steer can be estimated in many ways. Here it is calculated based on closest waypoint. The steering output must lie between [-1.2, 1.2]. We can see that steering output has many oscillations and is not smooth as the PID controller is not finely tuned.
+
 // What is the effect of the PID according to the plots, how each part of the PID affects the control command?
+
+The PID controller implemented in the code considers two independent controllers for throttle and steering which independently influences the movement of vehicle and avoids collisions. It was observed in the plots that the PID controller for steering affects the overall movement of vehicle in lateral direction and hence is the most sensitive. The P parameter is helpful in applying the control proportional to error but this also causes large abrupt steering maneuvers in front of obstacles. The I controller steps in to achieve a smooth transition to required correction, removes the offset but it also has a compounding effect. The D controller was useful damping oscillations but it was the most sensitive to changes in applying correction. The throttle PID controller helps in movement of vehicle in longitudinal direction but also affects the working of steering controller.
+
 // How would you design a way to automatically tune the PID parameters?
+One of the most intuitive ways to automatically tune the PID parameters would be to use the Twiddle algorithm as mentioned in the lectures.Numerical optimization methods or artificial intelligence can also be used to autotune PID parameters.
+
 // PID controller is a model free controller, i.e. it does not use a model of the car. Could you explain the pros and cons of this type of controller?
+Model free controller uses a simple representation of the system to design a simple trajectory following controller. PID controller needs only 3 parameters to be tuned to reduce the error and reach the desired value. However, the controller output may not be as desired, as the specifics of the system are not considered for design such as the exact application time of the corrections. It may not behave optimally in dynamic situations where quick trajectory or velocity changes are necessary.
+
 // (Optional) What would you do to improve the PID controller?
+In this code integral windup is used to get a passable trajectory.
+It can also be improved by investing more time to manually tune PID parameters by using MIT rule or rule-based tuning methods like Ziegler–Nichols method, etc or by using model based tuning methods.
+
+
+
